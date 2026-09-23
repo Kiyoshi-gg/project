@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+<h1>Регистрация</h1>
+<form method="post">
+    <p>
+        <input type="text" name="username" placeholder="Имя пользователя" required>
+    </p>
+    <p>
+        <input type="password" name="password" placeholder="Пароль" required>
+    </p>
+    <button type="submit">Зарегистрироваться</button>
+</form>
+<p>Есть аккаунт? <a href="{{ url_for('login') }}">Войти</a> </p>
+{% endblock %}

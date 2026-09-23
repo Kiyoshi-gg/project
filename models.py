@@ -1,6 +1,8 @@
 from datetime import datetime
+
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from extensions import db
+from extensions import db, login_manager
 
 recipe_ingredient = db.Table('recipe_ingredient', db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True),
                              db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredient.id'), primary_key=True),
@@ -8,7 +10,7 @@ recipe_ingredient = db.Table('recipe_ingredient', db.Column('recipe_id', db.Inte
 favorites = db.Table('favorites', db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True),
                      db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True))
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -26,6 +28,9 @@ class User(db.Model):
     def __repr__(self):
         return f'<User {self.username}>'
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 class Ingredient(db.Model):
     __tablename__ = 'ingredient'
