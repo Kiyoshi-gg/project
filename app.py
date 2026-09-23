@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 from extensions import db, login_manager
-from models import User ,Recipe, Ingredient
+from models import User, Recipe, Ingredient
 
 app = Flask(__name__)
 
@@ -23,10 +23,10 @@ def register():
         password = request.form.get('password', '')
         if not username or not password:
             flash('Заполните все поля', 'danger')
-            return redirect(url_for('register.html'))
+            return redirect(url_for('register'))
         if User.query.filter_by(username=username).first():
             flash('Пользователь с таким именем уже существует', 'danger')
-            return redirect(url_for('register.html'))
+            return redirect(url_for('register'))
 
         user = User(username=username)
         user.set_password(password)
@@ -42,7 +42,7 @@ def register():
 def login():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
-        password = request.form.get('password', '').strip()
+        password = request.form.get('password', '')
         user = User.query.filter_by(username=username).first()
 
         if user and user.check_password(password):
