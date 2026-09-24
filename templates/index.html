@@ -3,6 +3,20 @@
 {% block content %}
 <h1>Книга рецептов</h1>
 
+<form method="get" action="{{ url_for('index') }}" class="search-form">
+    <input type="text" name="q" value="{{ query }}" placeholder="Поиск">
+    <button type="submit">Найти</button>
+    {% if query %}
+        <a href="{{ url_for('index') }}" class="clear-btn">Сбросить</a>
+    {% endif %}
+</form>
+
+{% if query %}
+    <p class="search-info">
+        Результаты по запросу<strong>{{ query }}</strong>:{{ recipes|length }}
+    </p>
+{% endif %}
+
 <div class="recipe-grid">
     {% for recipe in recipes %}
         <article class="recipe-card">
@@ -13,9 +27,17 @@
             </h2>
             <p class="author">Автор: {{ recipe.author.username }}</p>
             <p>{{ recipe.description|truncate(120) }}</p>
+
+            {% if recipe.ingredients %}
+                <p class="tags">
+                    {% for ing in recipe.ingredients %}
+                        <span class="tag">{{ ing.name }}</span>
+                    {% endfor %}
+                </p>
+            {% endif %}
         </article>
     {% else %}
-        <p class="empty">Рецептов нет</p>
+        <p class="empty">Ничего не найдено</p>
     {% endfor %}
 </div>
 {% endblock %}

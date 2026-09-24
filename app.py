@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user
+from sqlalchemy import or_
 
 from extensions import db, login_manager
 from models import User, Recipe, Ingredient
@@ -14,8 +15,21 @@ login_manager.init_app(app)
 
 @app.route('/')
 def index():
-    recipes = Recipe.query.order_by(Recipe.created_at.desc()).all()
-    return render_template('index.html', recipes=recipes)
+    query = request.args.get('q', '').strip()
+    if query:
+        keywords = query.split()
+        filters = []
+        for kw in keywords:
+            pattern = f'%{kw}%'
+            filters.append(or_(
+                Recipe.title.ilike(pattern),
+                Recipe.description.ilike(pattern),
+                Recipe.ingredients.any(Ingredient.name.ilike(pattern))
+            ))
+        recipes = (Recipe.query.filter(*filters).order_by(Recipe.created_at.desc()).all())
+    else:
+        recipes = Recipe.query.order_by(Recipe.created_at.desc()).all()
+    return render_template('index.html', recipes=recipes, query=query)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
