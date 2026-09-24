@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Избранное{% endblock %}
+{% block content %}
+<h1>Мои избранные рецепты</h1>
+
+<ul>
+    {% for recipe in recipes %}
+        <li>
+            <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">
+                {{ recipe.title }}
+            </a>
+        </li>
+    {% else %}
+        <li>Пока ничего не добавлено.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

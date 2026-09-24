@@ -22,4 +22,13 @@
         {% endif %}
     {% endfor %}
 </ol>
+{% if current_user.is_authenticated %}
+    <form method="post" action="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}">
+        {% if current_user.favorite_recipes.filter_by(id=recipe.id).first() %}
+            <button type="submit">Удалить из избранного</button>
+        {% else %}
+            <button type="submit">Добавить в избранное</button>
+        {% endif %}
+    </form>
+{% endif %}
 {% endblock %}

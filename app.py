@@ -115,6 +115,26 @@ def recipe_detail(recipe_id):
     recipe = Recipe.query.get_or_404(recipe_id)
     return render_template('recipe_detail.html', recipe=recipe)
 
+@app.route('/favorites')
+@login_required
+def favorites():
+    recipes = current_user.favorite_recipes.all()
+    return render_template('favorites.html', recipes=recipes)
+
+@app.route('/recipe/<int:recipe_id>/favorite', methods=['POST'])
+@login_required
+def toggle_favorite(recipe_id):
+    recipe = Recipe.query.get_or_404(recipe_id)
+
+    if current_user.favorite_recipes.filter_by(id=recipe.id).first():
+        current_user.favorite_recipes.remove(recipe)
+        flash('Удаление из избранного','info')
+    else:
+        current_user.favorite_recipes.append(recipe)
+        flash('Добавлено в избранное','success')
+    db.session.commit()
+    return redirect(request.referrer or url_for('index'))
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

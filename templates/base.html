@@ -11,6 +11,7 @@
 
     {% if current_user.is_authenticated %}
       <a href="{{ url_for('recipe_create') }}">Добавить рецепт</a>
+      <a href="{{ url_for('favorites') }}">Избранное</a>
       <a href="{{ url_for('logout') }}">Выйти</a>
     {% else %}
       <a href="{{ url_for('login') }}">Войти</a>
