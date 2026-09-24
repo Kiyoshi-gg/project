@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ recipe.title }}{% endblock %}
+{% block content %}
+<h1>{{ recipe.title }}</h1>
+<p><em>Автор: {{ recipe.author.username }}</em></p>
+<p>{{ recipe.description }}</p>
+
+<h2>Ингредиенты</h2>
+<ul>
+    {% for ing in recipe.ingredients %}
+        <li>{{ ing.name }}</li>
+    {% else %}
+        <li>Ингредиенты не указаны</li>
+    {% endfor %}
+</ul>
+
+<h2>Пошаговое приготовление</h2>
+<ol>
+    {% for step in recipe.steps.split('\n') %}
+        {% if step.strip() %}
+            <li>{{ step }}</li>
+        {% endif %}
+    {% endfor %}
+</ol>
+{% endblock %}

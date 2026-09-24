@@ -2,5 +2,20 @@
 {% block title %}Книга рецептов{% endblock %}
 {% block content %}
 <h1>Книга рецептов</h1>
-<p>Рецепты</p>
+
+<div class="recipe-grid">
+    {% for recipe in recipes %}
+        <article class="recipe-card">
+            <h2>
+                <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">
+                    {{ recipe.title }}
+                </a>
+            </h2>
+            <p class="author">Автор: {{ recipe.author.username }}</p>
+            <p>{{ recipe.description|truncate(120) }}</p>
+        </article>
+    {% else %}
+        <p class="empty">Рецептов нет</p>
+    {% endfor %}
+</div>
 {% endblock %}
